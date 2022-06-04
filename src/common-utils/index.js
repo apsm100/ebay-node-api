@@ -48,7 +48,7 @@ function constructAdditionalParams(options){
             }
             if(key === "MinPrice" || key === "MaxPrice"){
                 filterParams += `itemFilter(${count}).paramName=Currency&
-                itemFilter(${count}).paramValue=${currency[currencyKey]}&`;
+                itemFilter(${count}).paramValue=${options['compareCurrency']}&`;
             }
             
             count++;
