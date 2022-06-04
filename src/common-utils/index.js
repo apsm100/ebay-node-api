@@ -14,8 +14,9 @@ const isString = (value)=>{
  * Constructs query param based on some logic to support filter and aspect_filter params.
  * output will be keywords=iphone&itemFilter(0).name=Condition&itemFilter(0).value=3000&itemFilter(1).name=FreeShippingOnly&itemFilter(1).value=true&itemFilter(2).name=SoldItemsOnly&itemFilter(2).value=true
  * @param {Object} options
+ * @param currency
  */
-function constructAdditionalParams(options){
+function constructAdditionalParams(options, currency){
     let params = '', filterParams = '';
     let count = 0;
     let currencyKey = this ? this.options.globalID : 'EBAY-US';
@@ -48,7 +49,7 @@ function constructAdditionalParams(options){
             }
             if(key === "MinPrice" || key === "MaxPrice"){
                 filterParams += `itemFilter(${count}).paramName=Currency&
-                itemFilter(${count}).paramValue=${options.compareCurrency}&`;
+                itemFilter(${count}).paramValue=${currency}&`;
             }
             
             count++;

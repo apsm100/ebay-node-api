@@ -60,11 +60,12 @@ const findCompletedItems = function (options) {
  * searches for items whose listings are completed and are no longer available for
  * sale by category (using categoryId), by keywords (using keywords), or a combination of the two.
  * @param {Object} options
+ * @param currency
  */
-const findItemsAdvanced = function (options) {
+const findItemsAdvanced = function (options, currency) {
     if (!options) throw new Error('INVALID_REQUEST_PARMS --> check here for input fields https://developer.ebay.com/DevZone/finding/CallRef/findItemsAdvanced.html#Input');
     this.options.operationName = FIND_ITEMS_ADV;
-    this.options.additionalParam = utils.constructAdditionalParams.bind(this)(options);
+    this.options.additionalParam = utils.constructAdditionalParams.bind(this)(options, currency);
     const url = urlObject.buildSearchUrl(this.options);
     return getRequest(url).then((data) => {
         return JSON.parse(data).findItemsAdvancedResponse;
