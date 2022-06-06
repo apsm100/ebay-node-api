@@ -59,7 +59,7 @@ const getCategorySuggestions = function (categoryTreeId, keyword) {
     if (!keyword) throw new Error('Missing keyword \n Refer documentation here https://developer.ebay.com/api-docs/commerce/taxonomy/resources/category_tree/methods/getCategorySuggestions');
     if (!this.options.appAccessToken) throw new Error('Missing Access token, Generate access token');
     const auth = 'Bearer ' + this.options.appAccessToken;
-    return makeRequest(this.options, `/commerce/taxonomy/v1_beta/category_tree/${categoryTreeId}/get_category_suggestions?q=${keyword}`, 'GET', auth).then((result) => {
+    return makeRequest(this.options, `/commerce/taxonomy/v1/category_tree/${categoryTreeId}/get_category_suggestions?q=${keyword}`, 'GET', auth).then((result) => {
         return JSON.parse(result);
     });
 };
