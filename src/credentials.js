@@ -4,14 +4,16 @@ const { base64Encode } = require('./common-utils');
 const { makeRequest } = require('./request');
 const { DEFAULT_BODY } = require('./constants');
 const DEFAULT_API_SCOPE = 'https://api.ebay.com/oauth/api_scope';
-
+let time = new Date();
+const TWO_HOURS = 7200000;
 /**
 * Generates an application access token for client credentials grant flow
 *
 * @return appAccessToken object
 */
 const getAccessToken = function () {
-    if (this.options.appAccessToken) {
+    const difference = time - new Date();
+    if (this.options.appAccessToken && difference >= TWO_HOURS) {
         return new Promise((resolve) => resolve(this.options.appAccessToken));
     }
     if (!this.options.clientID) throw new Error('Missing Client ID');
@@ -37,6 +39,7 @@ const getAccessToken = function () {
     return makeRequest(this.options, '/identity/v1/oauth2/token', 'POST', auth).then((result) => {
         const resultJSON = JSON.parse(result);
         if (!resultJSON.error) self.setAppAccessToken(resultJSON);
+        time = new Date();
         return resultJSON;
     });
 };
