@@ -12,7 +12,7 @@ const TWO_HOURS = 7200000;
 * @return appAccessToken object
 */
 const getAccessToken = function () {
-    const difference = time - new Date();
+    const difference = new Date() - time;
     if (this.options.appAccessToken && difference >= TWO_HOURS) {
         return new Promise((resolve) => resolve(this.options.appAccessToken));
     }
