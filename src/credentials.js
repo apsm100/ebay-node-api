@@ -11,6 +11,9 @@ const DEFAULT_API_SCOPE = 'https://api.ebay.com/oauth/api_scope';
 * @return appAccessToken object
 */
 const getAccessToken = function () {
+    if (this.options.appAccessToken) {
+        return new Promise((resolve) => resolve(this.options.appAccessToken));
+    }
     if (!this.options.clientID) throw new Error('Missing Client ID');
     if (!this.options.clientSecret) throw new Error('Missing Client Secret or Cert Id');
     if (!this.options.body) {
