@@ -4,18 +4,17 @@ const { base64Encode } = require('./common-utils');
 const { makeRequest } = require('./request');
 const { DEFAULT_BODY } = require('./constants');
 const DEFAULT_API_SCOPE = 'https://api.ebay.com/oauth/api_scope';
-let time = new Date();
-const TWO_HOURS = 7200000;
+
 /**
 * Generates an application access token for client credentials grant flow
 *
 * @return appAccessToken object
 */
-const getAccessToken = function () {
-    const difference = new Date() - time;
-    console.log("Time since token: ", difference);
-    if (this.options.appAccessToken && difference >= TWO_HOURS) {
-        return new Promise((resolve) => resolve(this.options.appAccessToken));
+const getAccessToken = function (appToken, onCreateToken) {
+    if (appToken?.token) {
+        console.log("Token from cache");
+        this.options.appAccessToken = appToken.token;
+        return new Promise((resolve) => resolve(appToken.token));
     }
     if (!this.options.clientID) throw new Error('Missing Client ID');
     if (!this.options.clientSecret) throw new Error('Missing Client Secret or Cert Id');
@@ -37,10 +36,11 @@ const getAccessToken = function () {
     const self = this;
     const encodedStr = base64Encode(this.options.clientID + ':' + this.options.clientSecret);
     const auth = 'Basic ' + encodedStr;
-    return makeRequest(this.options, '/identity/v1/oauth2/token', 'POST', auth).then((result) => {
+    return makeRequest(this.options, '/identity/v1/oauth2/token', 'POST', auth).then(async (result) => {
         const resultJSON = JSON.parse(result);
         if (!resultJSON.error) self.setAppAccessToken(resultJSON);
-        time = new Date();
+        await onCreateToken?.({token: resultJSON?.access_token, ttl: new Date(new Date().getTime() + (resultJSON?.expires_in ?? 7200) * 1000)})
+        console.log("Token cache updated");
         return resultJSON;
     });
 };
